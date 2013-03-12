@@ -81,6 +81,7 @@ customHeadersFooters
 \paperfontsize 12
 \spacing single
 \use_hyperref true
+\pdf_author "Florian Roessler"
 \pdf_bookmarks true
 \pdf_bookmarksnumbered true
 \pdf_bookmarksopen true
@@ -131,7 +132,7 @@ customHeadersFooters
 \branch chapter-3
 \selected 1
 \filename_suffix 0
-\color #faf0e6
+\color #aaff00
 \end_branch
 \branch NoChildDocument
 \selected 0
@@ -141,7 +142,7 @@ customHeadersFooters
 \branch chapter-4
 \selected 1
 \filename_suffix 0
-\color #faf0e6
+\color #ff5500
 \end_branch
 \index Index
 \shortcut idx
