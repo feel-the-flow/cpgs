@@ -226,11 +226,12 @@ Subtitle (if you have one)
 \end_layout
 
 \begin_layout Author
-Your name
+Florian D.
+ Roessler
 \end_layout
 
 \begin_layout Date
-Date (optional)
+21.05.2013
 \end_layout
 
 \begin_layout Publishers
@@ -280,19 +281,15 @@ baselineskip}
 \begin_inset Newline newline
 \end_inset
 
-Bla bla University Testburg
+University of Cambridge
 \begin_inset Newline newline
 \end_inset
 
-Faculty for leading edge science
+Department of Chemistry
 \begin_inset Newline newline
 \end_inset
 
-Institute for 
-\noun on
-Nobel
-\noun default
- price winning research
+
 \begin_inset VSpace -3cm
 \end_inset
 
@@ -302,7 +299,7 @@ Nobel
 \begin_layout Lowertitleback
 
 \series bold
-Dean
+Supervisor
 \series default
 
 \begin_inset VSpace smallskip
@@ -312,9 +309,9 @@ Dean
 \begin_inset Newline newline
 \end_inset
 
-Prof.
- Dr.
- xxx yyy
+Dr.
+ Peter J.
+ Bond
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -324,7 +321,7 @@ Prof.
 
 
 \series bold
-Referees
+Co-Supervisor
 \series default
 
 \begin_inset VSpace smallskip
@@ -334,19 +331,8 @@ Referees
 \begin_inset Newline newline
 \end_inset
 
-Prof.
- Dr.
- aaa bbb
-\begin_inset VSpace smallskip
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-Prof.
- Dr.
- xxx yyy
+Dr.
+ Oliver Korb
 \begin_inset VSpace bigskip
 \end_inset
 
@@ -356,7 +342,7 @@ Prof.
 
 
 \series bold
-Date of the graduation (optional)
+Date of the submission
 \series default
 
 \begin_inset VSpace smallskip
@@ -366,11 +352,11 @@ Date of the graduation (optional)
 \begin_inset Newline newline
 \end_inset
 
-xx.yy.zzzz
+28.06.2013
 \end_layout
 
 \begin_layout Dedication
-Dedication, cite from a famous person, or whatever you like (optional)
+Was die Welt im inneren Zusammenhält
 \end_layout
 
 \begin_layout Standard

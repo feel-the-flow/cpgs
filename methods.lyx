@@ -282,46 +282,603 @@ Title of next chapter
 \end_layout
 
 \begin_layout Section
-Overview
-\end_layout
-
-\begin_layout Standard
-bla bla bla bla bla bla bla bla bla bla bla bla bla PPS
-\begin_inset CommandInset nomenclature
-LatexCommand nomenclature
-symbol "PPS"
-description "Polyphenylene sulfide"
+Computer simulations
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:MD"
 
 \end_inset
 
- bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
- bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
- bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
- bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
- bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
- bla bla bla bla bla bla bla, see 
+
+\end_layout
+
+\begin_layout Standard
+Computer simulations have evolved over the last decades to be one of the
+ major tools for understanding how our world works.
+ In the context of molecular simulations, before simulations it was only
+ possible to extrapolate the time evolution of systems from a series of
+ static states that were difficult to be obtained through various experimental
+ methods (X-ray, NMR etc) simulations enable us to observe dynamical behaviour
+ of systems at an atomistic or even Quantum Mechanical (QM) level.
+ A broad set of different techniques are available to study dynamical behaviour
+ of complex biological or chemical systems (as for example molecules) on
+ the computer .
+ Depending on the purpose and system parameters (system size, process time,
+ process type) different simulation methods of various precisions are available.
+ While for systems containing only tens of atoms, QM simulations over small
+ timescales (arounds 1 ps) are possible, but going to a larger number of
+ particles or longer timescales is not feasible using QM simulations.
+ Hence simulation methods like classical molecular dynamics (MD) simulations
+ which use simplified representations of the particle in the systems under
+ study have to be used.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+For the purpose of this thesis, classical (MD) simulations was the appropriate
+ choice since it fulfilled the constraints given by the system size (around
+ 200k atoms), time scales (50 ns to 100 ns) and processes studied (ligand
+ molecule interactions).
+ In this chapter a brief introduction into the theory behind MD simulations
+ will be given.
+ For a more in depth insight to the field of simulations the author would
+ like to refer to additional literature 
 \begin_inset CommandInset citation
 LatexCommand cite
-key "Rich1921,Marq1963"
+key "Andrew,M.P.Allen1989,FrenkelDaan;Smit1996"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Potential energy surface and phase space
+\end_layout
+
+\begin_layout Standard
+In order to study the function and behaviour of chemical systems, based
+ on the dynamics of the atoms, classical MD simulation is used to explore
+ the relevant areas of the systems potential energy surface (PES).
+ The classical approach is based on the Born-Oppenheimer approximation,
+ in which the movement of the electrons is separated from the nucleus due
+ to the nucleus having a much higher mass.
+ Considering this mass difference, the electrons are assumed to almost instantan
+eously adjust their positions according to the position of the nucleus and
+ their motion can therefore be negelected.
+ The PES therefore is a 3N-6 
+\lang british
+dimensional
+\lang english
+ energy surface (hyper-surface) where each point represents the potential
+ energy of a unique configuration of the system and the configurations are
+ determined by the coordinates of each nuclei within the system.
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pes"
+
+\end_inset
+
+ such a hyper-surface is shown and since every point represents the energy
+ of a given configuration of atoms, minima and maxima can be related to
+ properties of that configuration.
+ A local minimum for example represents a stable configuration of the system
+ and usually the system moves within one well of its surface or depending
+ on the well depth it can cross over between different minimum configurations.
+ In order to map this hyper-surface either molecular mechanics (MM).
+ In order to sample the required configurations needed to observe the dynamical
+ behaviour of a system empirical force-fields (also referred to as MM) are
+ used.
+ Those force-fields describe the interaction of atoms as points that are
+ interacting with each other over forces derived from an potential energy
+ function.
+ This potential energy function is built from parameterised additive potentials
+ that are based on experimental or quantum mechanical data and only dependent
+ on the nuclear coordinates.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename D:/Documents/Cambridge/master_final up/media/PES.gif
+	scale 45
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pes"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Example of an PES 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schlegel"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+In classical MD simulations, the potential energy function derivative, in
+ combination with Newton's equation of motion are used to sample the PES.
+ By deriving the force on each particle from the potential energy function
+ and integrating Newton's second equation of motion, new position and velocities
+ of the atoms in our system can be calculated based on their current positions
+ and velocity.
+ By doing this MD simulations sample the phase space in which the state
+ of a system is described by the position and velocities of each particle
+ making the phase space a 6N dimensional space.
+ Knowing the positions and velocities of each atom at a point in time, the
+ potential energy at that time can be calculated, hence sampling the phase
+ space automatically samples the PES.
+\end_layout
+
+\begin_layout Subsection
+Integration Methods
+\end_layout
+
+\begin_layout Standard
+In the classical approximation the particles in the systems under study
+ are described as point particles which move under the influence of a continuous
+ potential.
+ As previously mentioned, Newton's equation of motion needs to be integrated
+ to obtain a new point within the phase space.
+ To be able to integrate those equations, a finite difference technique
+ (complex many body problems can not be solvent analytically) is used that
+ breaks down the integration process into small stages, separated by a distincti
+ve time-step 
+\begin_inset Formula $\delta t$
+\end_inset
+
+.
+ The size of this time-step in MD simulations is non trivial and therefore
+ will be elaborated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:timestep"
+
+\end_inset
+
+.
+ Within one time-step the forces on each particle are assumed to be constant
+ and are calculated as a sum of interactions with the other particles in
+ the system.
+ The force on each particle can be derived from the force-field that is
+ used in the simulation (by taking the negative derivative of the potential
+ energy function
+\begin_inset Formula $-\frac{\delta V\,(r)}{\delta r}=F\,(r)$
+\end_inset
+
+) and from the force we ultimately obtain the acceleration and velocities
+ of the particles giving us the new positions at 
+\begin_inset Formula $t+\delta t$
+\end_inset
+
+.
+ 
+\begin_inset Newline newline
+\end_inset
+
+There are several integration schemes available to integrate the equations
+ of motion using finite difference methods.
+ Here, the basic integration scheme along with one variation will be outlined.
+ All algorithms used for integration should hold the following properties:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+it should be time reversible
+\end_layout
+
+\begin_layout Itemize
+stable; i.e.
+ energy conservation 
+\end_layout
+
+\begin_layout Itemize
+propagation through the phase space has to be computational, efficient (long
+ enough time-steps 
+\begin_inset Formula $\delta t$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+All integration algorithms assume that the position and dynamic properties
+ can be represented as a Taylor series expansion:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+r\,(t+\delta t) & = & r\,(t)+v\,(t)*\delta t+\frac{1}{2}a\,(t)*\delta t^{2}+\ldots\\
+v\,(t+\delta t) & = & v\,(t_{0})+a\,(t_{0})*\delta t+\frac{1}{2}b\,(t)v\delta t^{2}+\ldots\\
+a\,(t+\delta t) & = & a\,(t)+b\,(t)*\delta t+\frac{1}{2}c\,(t)*\delta t^{2}+\ldots
+\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+One of the first and most widely used integration methods is the Verlet
+ algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Swope1982"
+
+\end_inset
+
+ which uses the positions of the previous time-step along with the current
+ positions to calculate the new positions at 
+\begin_inset Formula $t+\delta$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray*}
+r\,(t+\delta t) & = & r\,(t)+v\,(t)\star\delta t+\frac{1}{2}\frac{F\,(t)}{m}\star\delta t^{2}+\ldots\\
+r\,(t-\delta t) & = & r\,(t)-v\,(t)\star\delta t+\frac{1}{2}\frac{F\,(t)}{m}\star\delta t^{2}+\ldots
+\end{eqnarray*}
+
+\end_inset
+
+if we combine 1 and 2:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+r\,(t+\delta t) & = & 2r\,(t)-r\,(t-\delta t)+\frac{F\,(t)}{m}\star\delta t^{2}+\ldots
+\end{eqnarray*}
+
+\end_inset
+
+One disadvantage of the Verlet integration algorithm is that the velocities
+ are not calculated explicitly during the integration process and thus have
+ to be calculated separately.
+ This is necessary since the velocity is needed to ensure energy conservation
+ and to calculate further properties like the temperature of the system.
+ Therefore variations of the Verlet algorithm that allow the explicit calculatio
+n of the velocity have been sought.
+ One of them being the Leap-frog algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Hockney1974"
+
+\end_inset
+
+ that is outlined hereafter:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+v\,(t+\frac{1}{2}\delta t & )= & v\,\left(t-\frac{1}{2}\delta t\right)+a\,(t)\star\delta t\\
+r\,(t+\delta t) & = & r\,(t)+v\,(t+\frac{1}{2}\delta t)\star\delta t
+\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The leap-frog algorithm that will be used throughout this thesis, uses the
+ velocities from 
+\begin_inset Formula $t-\frac{1}{2}\delta t$
+\end_inset
+
+ and the acceleration at time 
+\begin_inset Formula $t$
+\end_inset
+
+ in order to calculate the velocities at time 
+\begin_inset Formula $t+\frac{1}{2}\delta t$
+\end_inset
+
+.
+ To obtain the new positions at time 
+\begin_inset Formula $t+\delta t$
+\end_inset
+
+ the previously calculated velocities at 
+\begin_inset Formula $t+\frac{1}{2}\delta t$
+\end_inset
+
+ and the positions at time 
+\begin_inset Formula $t$
+\end_inset
+
+ are used.
+ The advantage of the leap-frog algorithm is that it explicitly includes
+ the velocity but since the position and the velocities are not synchronised,
+ the kinetic energy contribution can only be averaged at the time when the
+ positions are calculated: 
+\begin_inset Formula 
+\begin{eqnarray*}
+v\,(t) & = & \frac{1}{2}\left[v\left(t-\frac{1}{2}\delta t\right)+v\left(t+\frac{1}{2}\delta t\right)\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Further integration schemes include the velocity verlet 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Swope1982"
+
+\end_inset
+
+ and the beeman algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Beeman1976"
 
 \end_inset
 
 .
 \end_layout
 
+\begin_layout Subsection
+Choice of Integration time-steps
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:timestep"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As described previously in finite difference methods, choosing the correct
+ time-step in which the total force on each particle is assumed to be constant
+ is not trivial.
+ The use of a large time step can result in instability of the system and
+ a characteristic ¨explosion¨ an MD system due to high energies of overlapping
+ atoms.
+ On the other hand, time-steps that are chosen too small result in limited
+ sampling of the phase space and hence will not reveal enough information
+ about the behaviour of the system.
+ In order to satisfy both requirements in MD simulations the time-step should
+ be smaller then the highest frequency vibration of the system, which in
+ the case of classical MD are the covalent bond to hydrogens stretching
+ vibrations.
+ Those vibrations are around 10 fs limiting the time-step in MD to around
+ 1 fs.
+ In cases where the vibrations of hydrogen bonds are not essential for the
+ dynamics of the system it is possible to increase the time-step by artificially
+ constraining those vibrational movements.
+ Two constraint algorithms which are used within this work are SHAKE 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ryckaert1977"
+
+\end_inset
+
+ and LINCS 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "HessB;BekkerHBerendsenHJC"
+
+\end_inset
+
+ thus the time-step can be increased to 2 fs and have been used throughout
+ this thesis.
+\end_layout
+
+\begin_layout Subsection
+Periodic Boundary Conditions (PBC)
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:pbc"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When performing MD simulations the protein of interest is usually solvated
+ within a simulation box.
+ If using hard boundaries (i.e.
+ a box with walls) surface effects would have a large undesirable effect
+ on the dynamics of the system.
+ In order to negatet these surface effects and preserving the dimensions
+ of the simulation box along with keeping the number of particles constant,
+ Periodic Boundary Conditions (PBC) are applied.
+ In a PBC treated simulation the central simulation box is surrounded by
+ images of itself where each atom in a replicated box moves according to
+ its original particle in the central box.
+ Therefore, if a particle crosses from one box to another, a mirror particle
+ from a neighboring box enters the system thus preserving the number of
+ particles.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename D:/Documents/Cambridge/master_final up/media/pbc.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Periodic Boundary Conditions 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Iacovella2006"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+The choice of the shape of the central box is not limited to cubic cells,
+ also other shapes such as hexagonal prism or truncated octahedron can be
+ used as long as the space between the images is completely filled.
+ The box shape should be chosen depending on the shape of the system under
+ study, since the correct choice can reduce the amount of solvent particles
+ needed to fill the box hence reducing the computational cost to simulate
+ the system.
+\end_layout
+
+\begin_layout Subsection
+Starting conditions
+\end_layout
+
+\begin_layout Standard
+The success of an MD simulation is vastly dependent on the initial conformation
+ of the system, hence care should be taken when choosing this conformation.
+ These states can be generated using energy minimasation and equilibration
+ of structures obtained from high-resolution structure data from X-ray or
+ NMR.
+ Besides the choice of the initial configuration, the assignment of the
+ starting velocities for the system has to be done.
+ One way to assign the initial velocities is by randomly choosing velocities
+ from the Maxwell distribution that describes the probability of atom i
+ with mass m having the velocity v at the desired system temperature T:
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+p\,(v_{ix}) & = & \left(\frac{m_{i}}{2\pi k_{B}T}\right)^{\frac{1}{2}}exp\,\left[-\frac{1}{2}\frac{m_{i}v_{ix}^{2}}{k_{B}T}\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $k_{B}$
+\end_inset
+
+ is the Boltzmann constant
+\end_layout
+
 \begin_layout Section
-The next section
-\end_layout
-
-\begin_layout Standard
-\begin_inset Branch NoChildDocument
-status collapsed
-
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-bibfiles "thesisExample"
-options "alpha"
+Force Fields (Molecular Mechanics)
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:MM"
 
 \end_inset
 
@@ -329,19 +886,708 @@ options "alpha"
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset nomencl_print
-LatexCommand printnomenclature
-set_width "custom"
-width "2.5cm"
+As described above, molecular mechanic force-fields are used to calculate
+ the forces on each particle in the system.
+ The potential energy function contains a set of additive potentials that
+ describe inter and intra molecular interactions on each particle in the
+ system.
+ These potentials incorporate parameters that are usually obtained through
+ experimental or quantum mechanical data and therefore are using information
+ from known structures and their behaviour is used to try to predict the
+ behaviour of unknown systems.
+ There is no correct or true force-field which can be used for every purpose
+ at the moment, but a number of force-fields which perform better in different
+ tasks.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The GROMACS simulation package (in version 4.5.4) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Berendsen1995"
+
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "VanDerSpoel2005"
+
+\end_inset
+
+supports a series of different versions of AMBER
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cornell1995"
+
+\end_inset
+
+, CHARMM
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Guvench2011"
+
+\end_inset
+
+, GROMOS
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Oostenbrink2004"
+
+\end_inset
+
+ force-fields along with the OPLS force-field
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kaminski2001"
+
+\end_inset
+
+.
+ In specific situation the system under study may require the use of polarisable
+ force-fields.
+ The different potentials in a simple force field can be separated in bonded
+ and non-bonded potentials and will be described briefly.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{total} & = & V_{bonded}+V_{non-bonded}
+\end{eqnarray*}
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Subsection
+Bonded Potentials
+\end_layout
+
+\begin_layout Standard
+\noindent
+The bonded part of the potential energy function in its simplest form can
+ be written as followed.
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{bonded} & = & \sum_{bond\, length}\nicefrac{1}{2}K_{b}(b-b_{0})^{2}+\sum_{bond\, angle}\nicefrac{1}{2}K_{\theta}(\theta-\theta_{0})^{2}+\\
+ &  & \sum_{improper\, torsion}\nicefrac{1}{2}K_{\omega}(\omega-\omega_{0})^{2}+\sum_{proper\, torsion}\nicefrac{1}{2}K_{n}[1+cos\,(n\upsilon-\upsilon_{0})]
+\end{eqnarray*}
+
+\end_inset
+
+ 
+\begin_inset Newline newline
+\end_inset
+
+The three energy contributions that are modelled by harmonic potentials
+ are the bond length, bond angle and the improper dihedral angles.
+ In all three cases the 
+\begin_inset Formula $b_{0}$
+\end_inset
+
+ or 
+\begin_inset Formula $\theta_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $\omega_{0}$
+\end_inset
+
+ describe the equilibrium length or angle while 
+\begin_inset Formula $K_{b}/K_{\theta}/K_{\omega}$
+\end_inset
+
+ are the force constants obtained from other data.
+ This simple description is in special cases (where certain system properties
+ have to be described in more detail) not sufficient in order to get the
+ desired accuracy, hence in all potentials additional or higher order terms
+ can significantly improve the accuracy.
+ 
+\begin_inset Newline newline
 \end_inset
 
 
+\begin_inset Newline newline
+\end_inset
+
+In case of the bond length, improvement can be achieved by using the Morse
+ potential
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Morse1929"
+
+\end_inset
+
+, which addresses the fact that it is harder to compress a bond than to
+ relax it.
+ The Morse potential therefore improves the accurate description of the
+ bond length energy from 0.3 Å up till 0.8 Å.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Also adding higher order terms to the harmonic potential describing the
+ bond angle improves the accurate description from 30º up to 70º.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $V\,(\theta)=\frac{k_{\theta}}{2}(\theta-\theta_{0})^{2}\,[1-k_{\theta}^{\text{´}}(\theta-\theta_{0})-k_{\theta}^{\text{´´}}(\theta-\theta_{0})^{2}-k_{\theta}^{\text{´´´}}(\theta-\theta_{0})^{3}\ldots]$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The more than two fold improvement in both cases is computationally expensive
+ and therefore usually other methods for the improvement of accuracy are
+ sought.
+ The incorporation of computationally expensive methods as described above
+ is depends on the performed study and system and in case of this thesis
+ the basic terms were sufficient.
+ In the case of the CHARMM forcefield, the Urey-Bradley term is added to
+ the bond angle potential.This effectivly adds an harmonic potential to the
+ 1,3 atoms that exist in an angle term.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray*}
+V\,(\theta) & = & \sum\nicefrac{1}{2}K_{\theta}(\theta-\theta_{0})^{2}+k_{UB}(r_{i}-r_{0})^{2}
+\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The final term described by a harmonic potential is the improper dihedral
+ angle term that restrains out of plane movement of one atom in a 4 atom
+ assembly (3 atoms centered around a fourth).
+ Three atoms i,j,k define a plane and the motion of atom l out of this plane
+ is restrained in order to insure that chirality and planarity within a
+ protein.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The sinusodial term in the bonded potentials shown above is the proper dihedral
+ angle which is used to describe the rotation around a chemical bond.
+ In case of the proper dihedral angles, ethane is often used as an example
+ how changes of the rotation around an angle lead to different energies
+ (Ethane goes through 3 maximum and 3 minimum energy configurations during
+ one rotation).
+ Again 4 atoms (connected sequentially) are used in order to define 2 planes
+ using the atoms 
+\begin_inset Formula $i,j,k$
+\end_inset
+
+ and 
+\begin_inset Formula $j,k,l$
+\end_inset
+
+ and then a cosine series expansion is applied to calculate the energy at
+ different angles of those planes towards each other.
+\end_layout
+
+\begin_layout Subsection
+Non-bonded
+\end_layout
+
+\begin_layout Standard
+The non-bonded part of the potential energy function has two components:
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{non-bonded} & = & V_{vdw}+V_{coulomb}
+\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+The van-der-waals (vdw) interactions is usually modelled by the Lennard-Jones
+ (LJ) 6-12 potential 
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{vdw} & = & \sum\epsilon\left[\left(\frac{R_{min}}{r}\right)^{12}-2\left(\frac{R_{min}}{r}\right)^{6}\right]
+\end{eqnarray*}
+
+\end_inset
+
+(
+\begin_inset Formula $r$
+\end_inset
+
+ being the distance between two atoms, 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ being the well depth and 
+\begin_inset Formula $R_{min}$
+\end_inset
+
+ being the minimum interaction distance) which describes the interplay between
+ attractive and repulsive forces between non-bonded atoms.
+ The attractive 
+\begin_inset Formula $r^{-6}$
+\end_inset
+
+ part of the vdw interactions arise from the induced dipoles due to fluctuation
+ of the electron clouds around atoms and can by itself be described through
+ the London forces.
+ The repulsive part 
+\begin_inset Formula $r^{-12}$
+\end_inset
+
+ originates from the Pauli principle that forbids the overlap of fully occupied
+ electronic shells.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Coulomb potential describes the interaction between different partial
+ charges on two atoms as point charges.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{coulomb} & = & \sum\frac{q_{1}q_{2}}{4\pi\varepsilon_{0}r}
+\end{eqnarray*}
+
+\end_inset
+
+(r being the distance between atom 1 and 2, 
+\begin_inset Formula $q_{1}$
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+ and
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\noun default
+\color inherit
+ 
+\begin_inset Formula $q_{2}$
+\end_inset
+
+ being the partial charges and 
+\begin_inset Formula $\epsilon_{0}$
+\end_inset
+
+ as the dielectric constant) 
+\begin_inset Newline newline
+\end_inset
+
+Since the non-bonded terms are pairwise interactions between every pair
+ of atoms within the system, calculating those interactions is in theory
+ a 
+\begin_inset Formula $\mathcal{O}(N^{2})$
+\end_inset
+
+ problem and thus computationally very expensive.
+ Therefore, an additional separation is applied in which the calculation
+ of non-bonded interactions are split up into short range and long range
+ interactions.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Due to the short range nature of the vdw-interactions (which falls off after
+ ~8 Å), the use of a cut off distance and neighbour lists can be used to
+ define the short range area.
+ In cut-off based approaches the calculation of pair wise interactions is
+ carried out within a distance cut-off that allows sufficient precision
+ while still being computational affordable.
+ This can reduce the complexity of the calculations to 
+\begin_inset Formula $\mathcal{O}(N)$
+\end_inset
+
+.
+ Neighbour lists methods further reduce the cost of calculation of short
+ range interactions by creating a list of atoms within the cut-off distance
+ of the current atom.
+ For a given number of time-steps (e.g.
+ 10), the pair wise interactions are only calculated for the atoms within
+ that list assuming that in this time-frame the atoms remain within the
+ cut-off distance.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+In contrast to the short range vdw interactions, the electrostatic potential
+ dominates the inter-particle potential way past the limitations of cut-off
+ distances (which considerably falls off only after ~30 Å).
+ Besides the increased cost due to the long range of the electrostatic interacti
+ons, the sum in the coulomb potential converges very slow for large numbers
+ of atoms hence a different treatment for these long range interactions
+ should to be applied.
+ In order to treat long range electrostatic interactions the Ewald summation
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ewald1921"
+
+\end_inset
+
+ was introduced.
+ In the Ewald summation the slowly converging series of the Coulomb potential
+ is replaced by two faster converging series one in the real space and one
+ in the reciprocal space (due to the fact of dealing with a lattice problem).
+ Since Ewald is applied in a lattice, one of the requirements of using the
+ Ewald summation is the use of explicit periodicity since this method was
+ developed to treat electrostatic energies in crystals.
+ The reciprocal part of the sum unfortunately still scales with 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+ thus further improvement of the Ewald scheme using the Particle Mesh Ewald
+ (PME)
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Darden1993"
+
+\end_inset
+
+ is used to improve the performance of the reciprocal sum.
+ The fast Fourier transformation used in PME reduce the scaling of the algorithm
+ from 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+ to 
+\begin_inset Formula $N\, log\,(N)$
+\end_inset
+
+.
+ Using PME the 
+\begin_inset Formula $N^{2}$
+\end_inset
+
+ scaling of the electrostatic interactions can be reduced to a 
+\begin_inset Formula $N\, log\,(N)$
+\end_inset
+
+ scaling problem without the need of using a cut-off based approach.
+\end_layout
+
+\begin_layout Section
+Statistical mechanics
+\end_layout
+
+\begin_layout Standard
+As previously described, MD simulations supply us with information about
+ the system at a microscopic level.
+ In order to obtain further (macroscopic) observables from this microscopic
+ information, statistical mechanics have to be used.
+ Deducting macroscopic information from our simulations enables us to draw
+ conclusions comparable to experimental observations, along with ensuring
+ that the conditions under which the system is studied are comparable to
+ experimental data.
+ The macroscopic observables depend on the position and velocity of the
+ particles within the system and the instantaneous value of any observable
+ A is determined by 
+\begin_inset Formula $A\,\left(p^{N}(t),r\,^{N}(t)\right)$
+\end_inset
+
+ at a specific time 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ In an experimental setup, macroscopic properties are usually measured as
+ a time average of the system since the information of the position and
+ velocity of each particle is not accessible.
+\begin_inset Formula 
+\begin{eqnarray*}
+A_{ave} & = & \underset{\tau\rightarrow\infty}{lim}\frac{1}{\tau}\int_{t=0}^{\tau}A\,\left(p^{N}(t),r\,^{N}(t)\right)dt
+\end{eqnarray*}
+
+\end_inset
+
+ As the time of the measurement increases, the average value approaches
+ its ¨true¨ value.
+\begin_inset Newline newline
+\end_inset
+
+One could argue that we could generate a trajectory of a macroscopic system
+ and then calculate the desired macroscopic property at each time-step and
+ average over the simulation time.
+ However, due to the complexity of macroscopic system (usually not less
+ then 
+\begin_inset Formula $10^{23}$
+\end_inset
+
+ atoms), the time evolution of a property A becomes too complex and Gibbs
+ suggested to replace it by the ensemble average.
+ An ensemble can be seen as a number of points in the phase space where
+ each point resembles a microstate of our system and the point distribution
+ is described by a probability density p(T).
+ The Liouville's theorem dp/dt ensures that the individual changes in the
+ phase space will in total cancel each other out.
+ If dealing with an equlibrated system where the defining properties of
+ the ensemble (i.e.
+ number of particles, volume and temperature) are constant, the total number
+ of microstates is constant as well.
+ Therefore, while the system evolves in time, one microstate moves into
+ another state, hence a microstate that was in a different state will fill
+ up the gap to ensure Liouville's theorem.
+ During MD simulation instead of propagating the system in time, a trajectory
+ moving from microstate to microstate is created instead, sampling the phase
+ space.
+ With a long enough sampling process, the trajectory could sample every
+ possible microstate (assuming an equal probability) of the ensemble.
+ An ensemble that follows the mentioned properties is called ergodic.
+ However, the time needed to sample every microstate of an ensemble is beyond
+ measurement, thus the correspondence to the time average is evident and
+ the ergodic hypothesis (time average = ensemble average) allows us to calculate
+ the ensemble average
+\begin_inset Formula 
+\begin{eqnarray*}
+\left\langle A\right\rangle  & = & \iint dp^{N}dr^{N}A\left(p^{N},r^{N}\right)\rho\left(r^{N},r^{N}\right)
+\end{eqnarray*}
+
+\end_inset
+
+in place of the time average.
+ One way to increase the sampling of the phase space, propagation of multiple
+ trajectories with different starting configurations and/or velocities of
+ the same system is used.
+\begin_inset Newline newline
+\end_inset
+
+The different ensembles used in simulation are the following: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Itemize
+The micro canonical ensemble (NVE): describing a isolated system with fixed
+ number of atoms (N), fixed Volume (V) and constant energy (E)
+\end_layout
+
+\begin_layout Itemize
+The canonical ensemble (NVT): described by a fixed number of atoms (N),
+ fixed Volume (V) and fixed Temperature (T)
+\end_layout
+
+\begin_layout Itemize
+The grand canonical ensemble (mVT): described by a fixed chemical potential
+ (m), fixed Volume (V) and fixed Temperature (T)
+\end_layout
+
+\begin_layout Itemize
+The isothermal-isobaric ensemble (NPT): described by a fixed number of atoms
+ (N), fixed pressure (P) and fixed Temperature (T)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The NPT ensemble is used within this thesis because it is comparable to
+ the experimental setups under study.s
+\begin_inset Newline newline
+\end_inset
+
+In order to control the constrains of the different ensembles within a simulatio
+n run a variety of methods are available.
+ In the following sections some of them will be briefly highlighted (one
+ example of how the number of atoms is kept constant during an MD simulation
+ has been explained in Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:pbc"
+
+\end_inset
+
+ with the use of PBC).
+\end_layout
+
+\begin_layout Subsection
+Temperature coupling
+\end_layout
+
+\begin_layout Standard
+Since the temperature is dependent on the velocities of the particles within
+ the system one method (that was also used in this thesis) to keep the temperatu
+re constant is to scale the velocities as described in equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:temp"
+
+\end_inset
+
+.
+ A temperature change can be actioned via the scaling of the velocities
+ between two time-steps thus the scaling factor can be calculated as follows
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Bussi2007"
+
+\end_inset
+
+:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+\Delta T & = & \frac{1}{2}\sum\frac{2}{3}\frac{m_{i}(\lambda v_{i})^{2}}{Nk_{B}}-\frac{1}{2}\sum\frac{2}{3}\frac{m_{i}v_{i}^{2}}{Nk_{B}}\label{eq:temp}\\
+\Delta T & = & (\lambda^{2}-1)T\,(t)\nonumber \\
+\lambda & = & \sqrt{\nicefrac{T_{new}}{T\,(t)}}\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+If the scaling factor 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is adjusted so that 
+\begin_inset Formula $T_{new}$
+\end_inset
+
+ is equal to the required temperature (
+\begin_inset Formula $T_{req}$
+\end_inset
+
+) the temperature of the system can be easily controlled by a single factor.
+\end_layout
+
+\begin_layout Subsection
+Pressure coupling
+\end_layout
+
+\begin_layout Standard
+The method used to keep the pressure constant during the production runs
+ in this thesis was the Parinello-Rahman barostat 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Parrinello1981"
+
+\end_inset
+
+, which modifies the dimensions of the box in order to adjust the pressure.
+ The coupling modifies the velocities as seen in the temperature coupling
+ and is shown in equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pre"
+
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{d^{2}r_{i}}{dt^{2}} & = & \frac{F_{i}}{m_{i}}-M\frac{dr_{i}}{dt}\label{eq:pre}\\
+M & = & b^{-1}\left[b\frac{db^{'}}{dt}+\frac{db}{dt}b^{'}\right]b^{'-1}\nonumber 
+\end{eqnarray}
+
+\end_inset
+
+with 
+\begin_inset Formula $b$
+\end_inset
+
+ being the matrix of the systems box vectors.
+\begin_inset Newline newline
+\end_inset
+
+The box vectors are dependent on the difference between the current pressure
+ and the reference pressure following equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:preb"
+
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{db^{2}}{dt^{2}} & = & V\, W^{-1}b^{'-1}\left(P-P_{ref}\right)\label{eq:preb}
+\end{eqnarray}
+
+\end_inset
+
+ Therefore, a change within the pressure of the system changes the dimensions
+ of the system which is used to scale the velocities.
 \end_layout
 
 \end_body
